@@ -59,6 +59,7 @@ contract BWCert721Modified is ERC721, Ownable {
         uint256 tokenId
     ) public virtual override {
         require(bitwaveApprovals[tokenId] == to, "Token transfers require Bitwave pre-approval.");
+        bitwaveApprovals[tokenId] = address(0x0);
         ERC721.transferFrom(from, to, tokenId);
     }
 

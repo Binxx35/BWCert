@@ -1,9 +1,18 @@
 
 const truffleAssert = require('truffle-assertions');
+const crypto = require('crypto');
 
 const BitwaveCert721 = artifacts.require("./BWCert721.sol");
 const BitwaveCert721A = artifacts.require("./BWCert721A.sol");
 const BitwaveCert721Modified = artifacts.require("./BWCert721Modified.sol");
+
+function randomAddress() {
+  return `0x${crypto.randomBytes(20).toString('hex')}`;
+}
+
+function randomAddresses(n) {
+  return Array(n).fill().map(randomAddress);
+}
 
 contract("BWCert721Modified", accounts  => {
   let BWCert721Modified;
@@ -77,6 +86,16 @@ contract("BWCert721Modified", accounts  => {
     it('should return a tokenURI', async () => {
       const URI = await BWCert721Modified.tokenURI(1);
       expect(URI).to.equal("ipfs://QmXYLJ2xZ3E9oLXRxVkwSEWxog7gnRtFVttQ5aEFAL5P1N/1.json");
+    });
+
+    it('should send to 50 addresses', async() => {
+      const recipients = randomAddresses(50);
+      const receipt = await BWCert721Modified.bulkMint(recipients, {from: owner});
+
+      cumulativeGasUsed = parseInt(receipt.receipt.cumulativeGasUsed);
+      
+      // Logging gas consumption from mint for later reference.
+      console.log("ERC721 Modified gas used for minting to holder: " + cumulativeGasUsed);
     });
 
   });
