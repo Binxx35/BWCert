@@ -1,16 +1,6 @@
-// SPDX-License-Identifier: MIT
-
-/***
-Looking to for a crypto / web3 ERP solution?
-Search no further: www.bitwave.io
-We are hiring, check out our careers page for great opportunities!
-***/
+// File: contracts/BWCert721Modified.sol
 
 pragma solidity ^0.8.4;
-
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
  /// @title A modified ERC721 token for Bitwave Certification.
  /// @author Inish Crisson
@@ -20,8 +10,8 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
  /// @notice This beta contract is pending review, not for mainnet deployment.
 contract BWCert721Modified is ERC721, Ownable {
 
-    // Pending image finalisation, presently placeholder.
-    string public baseURI = "ipfs://QmXYLJ2xZ3E9oLXRxVkwSEWxog7gnRtFVttQ5aEFAL5P1N/";
+    // Image storage
+    string public baseURI = "ipfs://QmTZ1mYb4rnfGbYHxBfSabhtxLUjKW3ySi6z2ri73bZHWb/";
     string private baseExtension = ".json";
 
     /// @notice A mapping to facilitate pre-approval functionality.
@@ -101,7 +91,11 @@ contract BWCert721Modified is ERC721, Ownable {
     /// @param tokenId the id of the token to be queried.
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         require(_exists(tokenId));
-        string memory stringTokenId = Strings.toString(tokenId);
-        return bytes(baseURI).length != 0 ? string(abi.encodePacked(baseURI, stringTokenId, baseExtension)) : '';
+        string memory baseURI = _baseURI();
+        return bytes(baseURI).length != 0 ? string(abi.encodePacked(baseURI)) : '';
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
     }
 }
