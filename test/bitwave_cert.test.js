@@ -85,7 +85,13 @@ contract("BWCert721Modified", accounts  => {
 
     it('should return a tokenURI', async () => {
       const URI = await BWCert721Modified.tokenURI(1);
-      expect(URI).to.equal("ipfs://QmXYLJ2xZ3E9oLXRxVkwSEWxog7gnRtFVttQ5aEFAL5P1N/1.json");
+      expect(URI).to.equal("ipfs://QmTZ1mYb4rnfGbYHxBfSabhtxLUjKW3ySi6z2ri73bZHWb/");
+    });
+
+    it('should not return a tokenURI for a non-existent NFT', async () => {
+      await truffleAssert.fails(BWCert721Modified.tokenURI(100),
+      truffleAssert.ErrorType.REVERT,
+      "This certificate has not been issued yet.");
     });
 
     it('should send to 50 addresses', async() => {

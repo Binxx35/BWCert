@@ -21,8 +21,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 contract BWCert721Modified is ERC721, Ownable {
 
     // Pending image finalisation, presently placeholder.
-    string public baseURI = "ipfs://QmXYLJ2xZ3E9oLXRxVkwSEWxog7gnRtFVttQ5aEFAL5P1N/";
-    string private baseExtension = ".json";
+    string public baseURI = "ipfs://QmTZ1mYb4rnfGbYHxBfSabhtxLUjKW3ySi6z2ri73bZHWb/";
 
     /// @notice A mapping to facilitate pre-approval functionality.
     /// @notice NFT transfers require approval from Bitwave & the owner of the NFT.
@@ -100,8 +99,7 @@ contract BWCert721Modified is ERC721, Ownable {
     /// @notice returns the URI of the image associated with the token.
     /// @param tokenId the id of the token to be queried.
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId));
-        string memory stringTokenId = Strings.toString(tokenId);
-        return bytes(baseURI).length != 0 ? string(abi.encodePacked(baseURI, stringTokenId, baseExtension)) : '';
+        require(_exists(tokenId), "This certificate has not been issued yet.");
+        return bytes(baseURI).length != 0 ? baseURI : '';
     }
 }
