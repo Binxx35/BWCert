@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
 
 /***
-
-Looking to for a crypto / web3 ERP solution? 
+Looking for a crypto / web3 ERP solution?
 Search no further: www.bitwave.io
-We are hiring as well, check out our careers page too for great opportunities!
-
+We are hiring great engineering talent, check out our careers page for opportunities!
 ***/
 
 pragma solidity ^0.8.4;

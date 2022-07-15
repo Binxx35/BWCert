@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 
 /***
-Looking to for a crypto / web3 ERP solution?
+Looking for a crypto / web3 ERP solution?
 Search no further: www.bitwave.io
-We are hiring, check out our careers page for great opportunities!
+We are hiring great engineering talent, check out our careers page for opportunities!
 ***/
 
 pragma solidity ^0.8.4;
@@ -21,8 +21,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 contract BWCert721Modified is ERC721, Ownable {
 
     // Pending image finalisation, presently placeholder.
-    string public baseURI = "ipfs://QmXYLJ2xZ3E9oLXRxVkwSEWxog7gnRtFVttQ5aEFAL5P1N/";
-    string private baseExtension = ".json";
+    string public baseURI = "ipfs://QmTZ1mYb4rnfGbYHxBfSabhtxLUjKW3ySi6z2ri73bZHWb/";
 
     /// @notice A mapping to facilitate pre-approval functionality.
     /// @notice NFT transfers require approval from Bitwave & the owner of the NFT.
@@ -44,7 +43,7 @@ contract BWCert721Modified is ERC721, Ownable {
     /// @param to the array of addresses to mint the NFTs to.
     function bulkMint(address[] memory to) public onlyOwner {
         for (uint i = 0; i < to.length; i++) {
-            _safeMint(to[i], currentTokenId());
+            _mint(to[i], currentTokenId());
         }
     }
 
@@ -57,20 +56,12 @@ contract BWCert721Modified is ERC721, Ownable {
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override {
-        require(bitwaveApprovals[tokenId] == to, "Token transfers require Bitwave pre-approval.");
+    ) public onlyOwner virtual override {
+        ERC721._approve(msg.sender, tokenId);
         ERC721.transferFrom(from, to, tokenId);
     }
 
-    /// @notice Token transfers require bitwave pre-approval.
-    /// @param tokenId the id of the token to be approved for transfer.
-    /// @param to the address to which the token is to be approved.
-    function bitwaveApprove(address to, uint256 tokenId) public onlyOwner {
-        bitwaveApprovals[tokenId] = to;
-    }
-
-    /// @notice Transfers a token to a new owner. This functions is called by the owner of the token. 
-    /// @notice This function requires pre-approval from Bitwave to run. 
+    /// @notice Transfers a token to a new owner. This functions is called by the owner of the contract.  
     /// @param from the address of the current owners of the token.
     /// @param to the address of the new owner of the token.
     /// @param tokenId the id of the token to be transfered.
@@ -78,9 +69,8 @@ contract BWCert721Modified is ERC721, Ownable {
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override {
-        require(bitwaveApprovals[tokenId] == to, "Token transfers require Bitwave pre-approval.");
-        bitwaveApprovals[tokenId] = address(0x0);
+    ) public onlyOwner virtual override {
+        ERC721._approve(msg.sender, tokenId);
         ERC721.safeTransferFrom(from, to, tokenId);
     }
 
@@ -99,8 +89,7 @@ contract BWCert721Modified is ERC721, Ownable {
     /// @notice returns the URI of the image associated with the token.
     /// @param tokenId the id of the token to be queried.
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId));
-        string memory stringTokenId = Strings.toString(tokenId);
-        return bytes(baseURI).length != 0 ? string(abi.encodePacked(baseURI, stringTokenId, baseExtension)) : '';
+        require(_exists(tokenId), "This certificate has not been issued yet.");
+        return bytes(baseURI).length != 0 ? baseURI : '';
     }
 }
